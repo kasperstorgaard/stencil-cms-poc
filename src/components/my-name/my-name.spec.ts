@@ -1,41 +1,49 @@
 import { flush, render } from '@stencil/core/testing';
-import { MyName } from './my-name';
+import { MyName, MyNameElement } from './my-name';
 
-describe('my-name', () => {
-  it('should build', () => {
+function setup(html): Promise<MyNameElement> {
+  return render({
+    components: [MyName],
+    html
+  });
+}
+
+describe('<my-name> component', () => {
+  it('should be defined', () => {
     expect(new MyName()).toBeTruthy();
   });
 
-  describe('rendering', () => {
-    let element;
-    beforeEach(async () => {
-      element = await render({
-        components: [MyName],
-        html: '<my-name></my-name>'
-      });
-    });
+  it('should render', async () => {
+    const element = await setup('<my-name></my-name>');
 
-    it('should work without parameters', () => {
-      expect(element.textContent).toEqual('Hello, my name is  ');
-    });
+    expect(element.textContent).toEqual('Hello, my name is  ');
+  });
 
-    it('should work a first name', async () => {
-      element.first = 'Peter';
-      await flush(element);
-      expect(element.textContent).toEqual('Hello, my name is Peter ');
-    });
+  it('should use "first" property', async () => {
+    const element = await setup('<my-name first="Peter"></my-name>');
 
-    it('should work with a last name', async () => {
-      element.last = 'Parker';
-      await flush(element);
-      expect(element.textContent).toEqual('Hello, my name is  Parker');
-    });
+    expect(element.textContent).toEqual('Hello, my name is Peter ');
+  });
 
-    it('should work with both a first and a list name', async () => {
-      element.first = 'Peter'
-      element.last = 'Parker';
-      await flush(element);
-      expect(element.textContent).toEqual('Hello, my name is Peter Parker');
-    });
+  it('should use "last" property', async () => {
+    const element = await setup('<my-name last="Parker"></my-name>');
+
+    expect(element.textContent).toEqual('Hello, my name is  Parker');
+  });
+
+  it('should use both "first" and "last" properties', async () => {
+    const element = await setup('<my-name first="Peter" last="Parker"></my-name>');
+
+    expect(element.textContent).toEqual('Hello, my name is Peter Parker');
+  });
+
+  it('should set "first" and "last" from code', async () => {
+    const element = await setup('<my-name></my-name>');
+
+    element.first = "Peter";
+    element.last = "Parker";
+    await flush(element);
+
+    expect(element.textContent).toEqual('Hello, my name is Peter Parker');
   });
 });
