@@ -1,6 +1,11 @@
 import { flush, render } from '@stencil/core/testing';
 import { MyName, MyNameElement } from './my-name';
 
+/**
+ * Sets up the test by rendering the passed html as a MyName component.
+ * @param html The html of the component. must contain <my-name></my-name>.
+ * @returns The html element.
+ */
 function setup(html): Promise<MyNameElement> {
   return render({
     components: [MyName],
