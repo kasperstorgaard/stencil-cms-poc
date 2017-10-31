@@ -1,5 +1,6 @@
 import { Component, Prop } from '@stencil/core';
 
+export interface MyNameElement extends MyName, HTMLElement {}
 
 @Component({
   tag: 'my-name',
